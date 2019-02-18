@@ -9,7 +9,8 @@ class Model:
         self.n = self.x.size()[1]
         self.weights = Vector.gen(c = self.m + 1, fill = 1)
         self.cost = 0
-        self.rate = 1
+        self.learning_rate = 1
+        self.s_cost = 5
 
         if normalize:
             self._x = self.x
@@ -34,11 +35,15 @@ class Model:
         elif type(data).__name__ == 'Vector':
             data_gravity = self.calc_gravity(data)
             return Vector([ data(l) - data_gravity for l in range(data.size()[0]) ])
-        
+
+    def accuracy(self):
+        predicted_values = [self.predict(self.x(i)) for i in range(self.m)]
+        predictions = [ 1 if predicted_values[i] == self.x(i) else 0 for i in range(self.m)]
+        return len([p for p in predictions if p == 1]) / len(predictions)
 
     def gradient(self):
         for i in range(self.weights.size()):
-            self.weights.vector[i] = self.weights(i) - (self.rate * 1 / self.m * self.gradient_error()) 
+            self.weights.vector[i] = self.weights(i) - (self.learning_rate * 1 / self.m * self.gradient_error()) 
 
     def gradient_error(self):
         error = 0
@@ -66,8 +71,7 @@ class Model:
 
 
     def learn(self, x, y):
-        x.show()
-        y.show()
+    
 
 
 
