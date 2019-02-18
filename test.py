@@ -1,4 +1,4 @@
-from fitter import Model, plt
+from model import Model, plt
 from matrix import Matrix, Vector
 
 if __name__ == '__main__':
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     print('FITTED WEIGHTS : ')
     model.weights.show()
 
-    print("Accuracy :", model.accuracy())
+    print("R2 SCORE :", model.r2_score())
 
     model.plot_cost(1)
     model.plot_2d_dataset(2)

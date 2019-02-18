@@ -2,7 +2,6 @@ from matrix import Vector, Matrix
 import random
 import matplotlib.pyplot as plt
 
-
 class Model:
     def __init__(self, x, y,  cost = 1):
         self.x = Matrix([[1, *sample] for sample in x.matrix])
@@ -76,6 +75,13 @@ class Model:
         print('\n')
         self.predictions = Vector([self.predict(self.x(i)) for i in range(self.m)])
         self.cost = Vector(cost)
+
+    def r2_score(self):
+        cost = self.error()
+        y_gravity = self.calc_gravity(self.y)
+        var = sum([ (self.y(i) - y_gravity) ** 2 for i in range(self.m)])
+        return 1 - (cost / var)
+        
 
     def plot_cost(self, fig = 1):
         plt.figure(fig)

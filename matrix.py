@@ -58,7 +58,6 @@ class Matrix:
 
     def sub(self, b):
         if self.check_size(self.matrix, b.matrix):
-
             c = []
             for i in range(len(self.matrix)):
                 c += [[]]
