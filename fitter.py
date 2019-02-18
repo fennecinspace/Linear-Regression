@@ -34,11 +34,6 @@ class Model:
             max_ = max(data.vector)
             return Vector([ (data(l) - min_) / (max_ - min_) for l in range(data.size()[0]) ])
 
-    def accuracy(self):
-        predicted_values = [self.predict(self.x(i)) for i in range(self.m)]
-        predictions = [ 1 if predicted_values[i] == self.y(i) else 0 for i in range(self.m)]
-        return len([p for p in predictions if p == 1]) / len(predictions)
-
     def gradient(self):
         t = []
         for i in range(self.weights.size()[0]):
