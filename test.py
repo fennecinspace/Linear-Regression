@@ -17,13 +17,13 @@ if __name__ == '__main__':
     model = Model(x_norm, y)
 
     print('INITIAL WEIGHTS : ')
-    model.weights.show()
+    print(model.weights)
 
-    ## learning
+    # learning
     model.learn(iters = 500, d_cost = 0.001)
 
     print('FITTED WEIGHTS : ')
-    model.weights.show()
+    print(model.weights)
 
     print("R2 SCORE :", model.r2_score())
 
