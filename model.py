@@ -21,7 +21,6 @@ class Model:
         if type(data).__name__ == 'Matrix':
             data_norm = []
             for c in range(data.size[1]):
-                # data_gravity = self.calc_gravity(data(None,c))
                 column = data(c)
                 min_ = min(column.raw)
                 max_ = max(column.raw)
@@ -29,7 +28,6 @@ class Model:
             return Matrix(data_norm).transpose()
         
         elif type(data).__name__ == 'Vector':
-            # data_gravity = self.calc_gravity(data)
             min_ = min(data.raw)
             max_ = max(data.raw)
             return Vector([ (data[l] - min_) / (max_ - min_) for l in range(data.size[0]) ])
@@ -43,7 +41,7 @@ class Model:
     def gradient_error(self, theta_i):
         error = 0
         for i in range(self.m):
-            error += ( self.predict(self.x[i]) - self.y[i] ) * self.x[i][theta_i]
+            error += ( self.predictions[i] - self.y[i] ) * self.x[i][theta_i]
         return error
 
     def calc_cost(self):
@@ -53,7 +51,7 @@ class Model:
     def error(self, pwr = 2):
         error = 0
         for i in range(self.m):
-            error += ( self.predict(self.x[i]) - self.y[i] ) ** pwr  
+            error += ( self.predictions[i] - self.y[i] ) ** pwr  
         return error
 
     def predict(self, sample):
@@ -66,7 +64,11 @@ class Model:
     def learn(self, iters = 10000, s_cost = 0.1, d_cost = 0.01):
         cost = []
         for i in range(iters + 1):
+            # calculating iteration predictions
+            self.predictions = Vector([self.predict(self.x[i]) for i in range(self.m)])
+            # applying gradient descent
             self.gradient()
+            # calculating new cost
             cost += [self.error()]
             print("\rIteration : {}, Cost: {}".format(i, cost[len(cost) - 1]), end = "")
             if cost[len(cost) - 1] < s_cost:
@@ -79,8 +81,7 @@ class Model:
 
     def r2_score(self):
         cost = self.error()
-        y_gravity = self.calc_gravity(self.y)
-        var = sum([ (self.y[i] - y_gravity) ** 2 for i in range(self.m)])
+        var = sum([ (self.y[i] - self.y.gravity) ** 2 for i in range(self.m)])
         return 1 - (cost / var)
         
 
