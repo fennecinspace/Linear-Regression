@@ -2,6 +2,12 @@ from matrix import Vector, Matrix
 import random
 import matplotlib.pyplot as plt
 
+class Processor():
+    def __init__(self, path):
+        with open(path) as f:
+            data = f.read()
+
+
 class Model:
     def __init__(self, x, y,  cost = 1):
         self.x = Matrix([[1, *sample] for sample in x.raw])
@@ -54,18 +60,22 @@ class Model:
             error += ( self.predictions[i] - self.y[i] ) ** pwr  
         return error
 
-    def predict(self, sample):
+    def predict(self, sample, poly = False):
         if sample.size[1] == self.weights.size[0]:
-            prediction = (sample * self.weights)[0][0]
+            if poly == True:
+                prediction = (Vector([ f ** i for i, f in enumerate(sample.raw) ], transpose = True) * self.weights)[0][0]
+            else:
+                prediction = (sample * self.weights)[0][0]
             return prediction
         else:
             print('Wrong Sample', sample)
 
-    def learn(self, iters = 10000, s_cost = 0.1, d_cost = 0.01):
+
+    def learn(self, iters = 10000, s_cost = 0.1, d_cost = 0.01, polynomial = False):
         cost = []
         for i in range(iters + 1):
             # calculating iteration predictions
-            self.predictions = Vector([self.predict(self.x[i]) for i in range(self.m)])
+            self.predictions = Vector([self.predict(self.x[i], polynomial) for i in range(self.m)])
             # applying gradient descent
             self.gradient()
             # calculating new cost
@@ -76,7 +86,7 @@ class Model:
             if len(cost) > 50 and (cost[len(cost) - 50] - cost[len(cost) - 1]) < d_cost:
                 break
         print('\n')
-        self.predictions = Vector([self.predict(self.x[i]) for i in range(self.m)])
+        self.predictions = Vector([self.predict(self.x[i], polynomial) for i in range(self.m)])
         self.cost = Vector(cost)
 
     def r2_score(self):

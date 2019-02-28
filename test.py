@@ -20,7 +20,7 @@ if __name__ == '__main__':
     print(model.weights)
 
     # learning
-    model.learn(iters = 500, d_cost = 0.001)
+    model.learn(iters = 500, d_cost = 0.001, polynomial = True)
 
     print('FITTED WEIGHTS : ')
     print(model.weights)
