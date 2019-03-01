@@ -2,20 +2,42 @@ from matrix import Vector, Matrix
 import random
 import matplotlib.pyplot as plt
 
-class Processor():
-    def __init__(self, path):
+class Data():
+    def __init__(self, path, delimiter = ',', header = True):
         with open(path) as f:
-            data = f.read()
+            data_str = f.read()
+        lines = data_str.strip().splitlines()
+        data = [line.split(delimiter) for line in lines]
+        if header:
+            self.header = data[0]
+            self.values = [ [ float(c) for c in l] for l in data[1:] ]
+        else:
+            self.values = [ [ float(c) for c in l] for l in data ]
 
+    def __getitem__(self, index):
+        return self.values[index]
 
+    def __call__(self, start, end = None, cols = False):
+        if end:
+            if cols: 
+                return [[ line[i] for line in self.values ] for i in range(start, end) ]
+            else:
+                return [ line[start:end] for line in self.values ]
+        else: 
+            return [ line[start] for line in self.values ]
+
+    @property
+    def size(self):
+        return (len(self.values), len(self.values[0]) - 1)
+            
 class Model:
-    def __init__(self, x, y,  cost = 1):
+    def __init__(self, x, y,  cost = 1, learning_rate = 0.2):
         self.x = Matrix([[1, *sample] for sample in x.raw])
         self.y = y
         self.m = self.x.size[0]
         self.n = self.x.size[1]
         self.weights = Vector.gen(self.n, fill = 0)
-        self.learning_rate = 0.2
+        self.learning_rate = learning_rate
         self.stop_cost = cost
 
     @classmethod
